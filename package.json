@@ -26,4 +26,7 @@
     "sharing"
   ],
   "license": "Apache-2.0"
+  "dependencies": {
+    "plist": "^3.0.1"
+  }
 }
