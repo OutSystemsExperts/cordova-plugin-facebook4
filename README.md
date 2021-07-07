@@ -1,6 +1,6 @@
 # cordova-plugin-facebook4
 
-> Use Facebook SDK version 4 in Cordova projects
+> Use the latest Facebook SDK version in Cordova projects
 
 ## Installation
 
@@ -9,14 +9,21 @@ See npm package for versions - https://www.npmjs.com/package/cordova-plugin-face
 Make sure you've registered your Facebook app with Facebook and have an `APP_ID` [https://developers.facebook.com/apps](https://developers.facebook.com/apps).
 
 ```bash
-$ cordova plugin add cordova-plugin-facebook4 --save --variable APP_ID="123456789" --variable APP_NAME="myApplication"
+$ cordova plugin add cordova-plugin-facebook4 --save
 ```
 
-If you need to change your `APP_ID` after installation, it's recommended that you remove and then re-add the plugin as above. Note that changes to the `APP_ID` value in your `config.xml` file will *not* be propagated to the individual platform builds.
+If you want to use a different APP_ID than the one specified in the "Accessibility configuration" in your OutSystems application, you must provide a JSON file named ```facebook_login.json```, deployed to a directory named ```facebookLogin``` with the following format:
+
+```json
+{
+  "APP_ID": "123456789",
+  "APP_NAME": "myApplication"
+}
+```
 
 ## Usage
 
-This is a fork of the [official plugin for Facebook](https://github.com/Wizcorp/phonegap-facebook-plugin/) in Apache Cordova that implements the latest Facebook SDK. Unless noted, this is a drop-in replacement. You don't have to replace your client code.
+This is an indirect fork of the [official plugin for Facebook](https://github.com/Wizcorp/phonegap-facebook-plugin/) via [Jeduan Cornejo Facebook Plugin for Cordova](https://github.com/jeduan/cordova-plugin-facebook4.git) in Apache Cordova that implements the latest Facebook SDK. Unless noted, this is a drop-in replacement. You don't have to replace your client code.
 
 The Facebook plugin for [Apache Cordova](http://cordova.apache.org/) allows you to use the same JavaScript code in your Cordova application as you use in your web application. However, unlike in the browser, the Cordova application will use the native Facebook app to perform Single Sign On for the user.  If this is not possible then the sign on will degrade gracefully using the standard dialog based authentication.
 
@@ -46,17 +53,19 @@ The Facebook plugin for [Apache Cordova](http://cordova.apache.org/) allows you 
 
 Success function returns an Object like:
 
-	{
-		status: "connected",
-		authResponse: {
-			session_key: true,
-			accessToken: "<long string>",
-			expiresIn: 5183979,
-			sig: "...",
-			secret: "...",
-			userID: "634565435"
-		}
-	}
+```json
+{
+  "status": "connected",
+  "authResponse": {
+    "session_key": true,
+    "accessToken": "<long string>",
+    "expiresIn": 5183979,
+    "sig": "...",
+    "secret": "...",
+    "userID": "634565435"
+  }
+}
+```
 
 Failure function returns an error String.
 
@@ -70,16 +79,16 @@ Failure function returns an error String.
 
 Success function returns an Object like:
 
-```
+```json
 {
-	authResponse: {
-		userID: "12345678912345",
-		accessToken: "kgkh3g42kh4g23kh4g2kh34g2kg4k2h4gkh3g4k2h4gk23h4gk2h34gk234gk2h34AndSoOn",
-		session_Key: true,
-		expiresIn: "5183738",
-		sig: "..."
+	"authResponse": {
+		"userID": "12345678912345",
+		"accessToken": "kgkh3g42kh4g23kh4g2kh34g2kg4k2h4gkh3g4k2h4gk23h4gk2h34gk234gk2h34AndSoOn",
+		"session_Key": true,
+		"expiresIn": "5183738",
+		"sig": "..."
 	},
-	status: "connected"
+	"status": "connected"
 }
 ```
 For more information see: [Facebook Documentation](https://developers.facebook.com/docs/reference/javascript/FB.getLoginStatus)
@@ -91,59 +100,69 @@ For more information see: [Facebook Documentation](https://developers.facebook.c
 Example options -
 Share Dialog:
 
-	{
-		method: "share",
-		href: "http://example.com",
-		caption: "Such caption, very feed.",
-		description: "Much description",
-		picture: 'http://example.com/image.png'
-		share_feedWeb: true, // iOS only
-	}
+```json
+{
+  "method": "share",
+  "href": "http://example.com",
+  "caption": "Such caption, very feed.",
+  "description": "Much description",
+  "picture": "http://example.com/image.png",
+  "share_feedWeb": true
+}
+```
+
+> <b>Note</b> ```share_feedWeb``` is ignored in Android
 
 For iOS, the default dialog mode is [`FBSDKShareDialogModeAutomatic`](https://developers.facebook.com/docs/reference/ios/current/constants/FBSDKShareDialogMode/). You can share that by adding a specific dialog mode parameter. The available share dialog modes are: `share_sheet`, `share_feedBrowser`, `share_native` and `share_feedWeb`. [Read more about share dialog modes](https://developers.facebook.com/docs/reference/ios/current/constants/FBSDKShareDialogMode/)
 
 Game request:
 
-	{
-		method: "apprequests",
-		message: "Come on man, check out my application.",
-		data: data,
-		title: title,
-		actionType: 'askfor',
-		filters: 'app_non_users'
-	}
+```json
+{
+  "method": "apprequests",
+  "message": "Come on man, check out my application.",
+  "data": "dataString",
+  "title": "title",
+  "actionType": "askfor",
+  "filters": "app_non_users"
+}
+```
 
 Send Dialog:
 
-	{
-		method: "send",
-		caption: "Check this out.",
-		link: "http://example.com",
-		description: "The site I told you about",
-		picture: "http://example.com/image.png"
-	}
+```json
+{
+  "method": "send",
+  "caption": "Check this out.",
+  "link": "http://example.com",
+  "description": "The site I told you about",
+  "picture": "http://example.com/image.png"
+}
+```
 	
 Share dialog - Open Graph Story: (currently only fully available on Android, iOS currently does not support action_properties)
 
-	{
-		var obj = {};
-	
-    	obj['og:type'] = 'objectname';
-    	obj['og:title'] = 'Some title';
-    	obj['og:url'] = 'https://en.wikipedia.org/wiki/Main_Page';
-    	obj['og:description'] = 'Some description.';
+```js
+{
+  var obj = {};
 
-    	var ap = {};
-    	
-    	ap['expires_in'] = 3600;
-    	
-    	var options = {
-    		method: 'share_open_graph', // Required
-        	action: 'actionname', // Required
-        	action_properties: JSON.stringify(ap), // Optional
-        	object: JSON.stringify(obj) // Required
-    	};
-	}
+    obj['og:type'] = 'objectname';
+    obj['og:title'] = 'Some title';
+    obj['og:url'] = 'https://en.wikipedia.org/wiki/Main_Page';
+    obj['og:description'] = 'Some description.';
+
+    var ap = {};
+    
+    ap['expires_in'] = 3600;
+    
+    var options = {
+      method: 'share_open_graph', // Required
+        action: 'actionname', // Required
+        action_properties: JSON.stringify(ap), // Optional
+        object: JSON.stringify(obj) // Required
+    };
+}
+```
 	
 In case you want to use custom actions/objects, just prepend the app namespace to the name (E.g: ` obj['og:type'] = 'appnamespace:objectname' `, `action: 'appnamespace:actionname'`. The namespace of a Facebook app is found on the Settings page. 
 
@@ -161,7 +180,9 @@ Allows access to the Facebook Graph API. This API allows for additional permissi
 
 Example permissions:
 
-	["public_profile", "user_birthday"]
+```js
+["public_profile", "user_birthday"]
+```
 
 Success function returns an Object.
 
@@ -214,35 +235,36 @@ Please check out the [App Invites Overview](https://developers.facebook.com/docs
 
 Example options:
 
-    {
-      url: "http://example.com",
-      picture: "http://example.com/image.png"
-    }
+```json
+{
+  "url": "http://example.com",
+  "picture": "http://example.com/image.png"
+}
+```
 
 ## Sample Code
 
 ```js
 facebookConnectPlugin.appInvite(
-    {
-        url: "http://example.com",
-        picture: "http://example.com/image.png"
-    },
-    function(obj){
-        if(obj) {
-            if(obj.completionGesture == "cancel") {
-                // user canceled, bad guy
-            } else {
-                // user really invited someone :)
-            }
+{
+    url: "http://example.com",
+    picture: "http://example.com/image.png"
+},
+function(obj){
+    if(obj) {
+        if(obj.completionGesture == "cancel") {
+            // user canceled, bad guy
         } else {
-            // user just pressed done, bad guy
+            // user really invited someone :)
         }
-    },
-    function(obj){
-        // error
-        console.log(obj);
+    } else {
+        // user just pressed done, bad guy
     }
-);
+},
+function(obj){
+    // error
+    console.log(obj);
+});
 ```
 
 ### Login

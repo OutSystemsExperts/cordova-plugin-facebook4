@@ -212,7 +212,7 @@
     }
 
     // Else just return OK we are already logged out
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Logged out"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
